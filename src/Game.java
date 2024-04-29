@@ -76,7 +76,14 @@ public class Game  extends JPanel implements Runnable, KeyListener{
         }
       
 	
- 
+    g2d.setFont( new Font("Impact", Font.PLAIN, 50));
+        drawLives(g2d);
+        if(!word.getDisplayWord().contains("-")) {
+			g2d.clearRect(0, 0, getSize().width, getSize().height);
+			g2d.drawString("You Win", 150, 350);
+			g2d.drawString("Press Space To Restart", 100,650);
+			wrongguess="";
+		}
         }
         twoDgraph.drawImage(back, null, 0, 0);
      
@@ -93,6 +100,7 @@ public class Game  extends JPanel implements Runnable, KeyListener{
         switch(lives) {
 
         case 5:
+        	g2d.drawString("All words are capitals of countries.", 200,500);
         case 4:
 
         case 3:
@@ -102,8 +110,10 @@ public class Game  extends JPanel implements Runnable, KeyListener{
 
 
         case 1:
-        
-           
+        	 g2d.drawString("Your Lives Left:"+lives, 20, 80);
+          g2d.drawString(word.getDisplayWord(), 150, 300);
+            g2d.drawString("Your Wrong Guesses:"+wrongguess, 205, 400);
+            break;
                 
         case 0:
         	 loser=true;
@@ -120,14 +130,40 @@ public class Game  extends JPanel implements Runnable, KeyListener{
 		char c= e.getKeyChar();
 		System.out.println(c);
 		
-	
-    }
-	
-	
-
-	
+		if(key==32 && start) {
+			start=false;
+		}
+		else {
+		if(!word.checkGuess(c)) {	
+			guesses(c);
+			wrongguess+= guesses+"";
+			//lives--;
+			
+		}
+		if(32==e.getKeyCode()) {
+		reset();
 		
-	
+		}}
+	}
+	private void reset() {
+		word.reset();
+		loser=false;
+		guesses="";
+		lives=5;
+}
+	public void guesses (char c) {
+		boolean contains = true;
+		for (int i=0; i<guesses.length(); i++) {
+			if (c==guesses.charAt(i)) {
+				contains = false;
+			}
+		}
+		if(contains) {
+			guesses+= c + " ";
+			lives--;
+			
+		}
+	}
 	
 public void Lose(Graphics g2d) {
 		
